@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Transcript Summarizer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background-color: #f4f4f4;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    textarea {
+      width: 100%;
+      max-width: 800px;
+      height: 250px;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      resize: vertical;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #result {
+      white-space: pre-wrap;
+      margin-top: 30px;
+      padding: 20px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      max-width: 800px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧠 Transcript Summarizer</h1>
+
+  <label for="transcript">Paste your meeting transcript below:</label>
+  <textarea id="transcript" placeholder="e.g. Today we discussed..."></textarea>
+
+  <br>
+  <button onclick="summarize()">Summarize Transcript</button>
+
+  <div id="result"></div>
+
+  <script>
+    async function summarize() {
+      const transcript = document.getElementById('transcript').value;
+      const resultBox = document.getElementById('result');
+
+      if (!transcript.trim()) {
+        resultBox.textContent = "❗ Please paste a transcript before summarizing.";
+        return;
+      }
+
+      resultBox.textContent = "⏳ Summarizing...";
+
+      try {
+        const response = await fetch("/summarize", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ transcript })
+        });
+
+        const data = await response.json();
+        resultBox.textContent = data.summary || data.error;
+
+      } catch (error) {
+        resultBox.textContent = "Something went wrong: " + error;
+      }
+    }
+  </script>
+</body>
+</html> 
